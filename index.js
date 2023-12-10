@@ -18,7 +18,7 @@ const debounce = (fn, ms) => {
 
 const debouncedSearch = debounce(searchRepos, 400);
 
-input.addEventListener("keyup", debouncedSearch);
+input.addEventListener("input", debouncedSearch);
 
 function loadRep(data, element) {
   element.replaceChildren();
@@ -57,13 +57,13 @@ async function searchRepos() {
 }
 
 let removeRepo = function (e) {
-  console.log("close func");
+  console.log("REMOVE func");
   e.target.parentElement.remove();
   e.target.removeEventListener("click", removeRepo);
 };
 
 let pickRepo = function (e) {
-  console.log("CLICK func");
+  console.log("PICK func");
   let value = e.target.innerText;
   console.log(value);
   const fragment = document.createDocumentFragment();
