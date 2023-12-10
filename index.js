@@ -23,11 +23,10 @@ input.addEventListener("input", debouncedSearch);
 function loadRep(data, element) {
   element.replaceChildren();
   if (dataRes.items.length === 0) {
-    console.log(1);
-    repNameList.insertAdjacentHTML(
-      "beforeend",
-      `<li>Совпадений не найдено </li>`
-    );
+    // console.log(1);
+    const nameItem = document.createElement("li");
+    nameItem.textContent = `Совпадений не найдено`;
+    repNameList.appendChild(nameItem);
   }
   if (data) {
     data.forEach((item) => {
@@ -39,10 +38,10 @@ function loadRep(data, element) {
   }
 }
 
-async function searchRepos() {
-  const valueInput = input.value;
-  console.log(valueInput);
-  repNameList.style.display = "block";
+async function searchRepos(e) {
+  const valueInput = e.target.value;
+  //   console.log(valueInput);
+  repNameList.classList.remove("hidden");
   return await fetch(
     `https://api.github.com/search/repositories?q=${valueInput}&per_page=5`
   )
@@ -57,37 +56,38 @@ async function searchRepos() {
 }
 
 let removeRepo = function (e) {
-  console.log("REMOVE func");
+  //   console.log("REMOVE func");
   e.target.parentElement.remove();
   e.target.removeEventListener("click", removeRepo);
 };
 
 let pickRepo = function (e) {
-  console.log("PICK func");
+  //   console.log("PICK func");
   let value = e.target.innerText;
-  console.log(value);
+  //   console.log(value);
   const fragment = document.createDocumentFragment();
   dataRes.items.forEach((item) => {
     if (item.name === value) {
       const responseItem = document.createElement("ul");
-      responseItem.insertAdjacentHTML(
-        "beforeend",
-        `<li>Name: ${item.name}</li>`
-      );
-      responseItem.insertAdjacentHTML(
-        "beforeend",
-        `<li>Owner: ${item.owner.login}</li>`
-      );
-      responseItem.insertAdjacentHTML(
-        "beforeend",
-        `<li>Stars: ${item.stargazers_count}</li>`
-      );
+
+      const nameItem = document.createElement("li");
+      nameItem.textContent = `Name: ${item.name}`;
+      responseItem.appendChild(nameItem);
+
+      const ownerItem = document.createElement("li");
+      ownerItem.textContent = `Owner: ${item.owner.login}`;
+      responseItem.appendChild(ownerItem);
+
+      const starsItem = document.createElement("li");
+      starsItem.textContent = `Stars: ${item.stargazers_count}`;
+      responseItem.appendChild(starsItem);
+
       const btnClose = document.createElement("button");
       responseItem.appendChild(btnClose);
       btnClose.addEventListener("click", removeRepo);
       fragment.appendChild(responseItem);
       input.value = "";
-      repNameList.style.display = "none";
+      repNameList.classList.add("hidden");
     }
   });
   responselist.prepend(fragment);

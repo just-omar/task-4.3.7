@@ -82,3 +82,7 @@ body {
 .response-list button::after {
   transform: rotate(-45deg);
 }
+
+.hidden {
+  display: none;
+}
