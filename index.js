@@ -16,9 +16,9 @@ const debounce = (fn, ms) => {
   };
 };
 
-const searchRepos = debounce(searcRepos, 400);
+const debouncedSearch = debounce(searchRepos, 400);
 
-input.addEventListener("keyup", searchRepos);
+input.addEventListener("keyup", debouncedSearch);
 
 function loadRep(data, element) {
   element.replaceChildren();
@@ -33,14 +33,15 @@ function loadRep(data, element) {
     data.forEach((item) => {
       itemRep = document.createElement("li");
       itemRep.textContent = `${item}`;
-      itemRep.addEventListener("click", funcClick);
+      itemRep.addEventListener("click", pickRepo);
       element.append(itemRep);
     });
   }
 }
 
-async function searcRepos() {
+async function searchRepos() {
   const valueInput = input.value;
+  console.log(valueInput);
   repNameList.style.display = "block";
   return await fetch(
     `https://api.github.com/search/repositories?q=${valueInput}&per_page=5`
@@ -55,13 +56,16 @@ async function searcRepos() {
     .catch((e) => console.log(e));
 }
 
-let funcBtnClose = function (e) {
+let removeRepo = function (e) {
+  console.log("close func");
   e.target.parentElement.remove();
-  e.target.removeEventListener("click", funcBtnClose);
+  e.target.removeEventListener("click", removeRepo);
 };
 
-let funcClick = function (e) {
+let pickRepo = function (e) {
+  console.log("CLICK func");
   let value = e.target.innerText;
+  console.log(value);
   const fragment = document.createDocumentFragment();
   dataRes.items.forEach((item) => {
     if (item.name === value) {
@@ -80,12 +84,12 @@ let funcClick = function (e) {
       );
       const btnClose = document.createElement("button");
       responseItem.appendChild(btnClose);
-      btnClose.addEventListener("click", funcBtnClose);
+      btnClose.addEventListener("click", removeRepo);
       fragment.appendChild(responseItem);
       input.value = "";
       repNameList.style.display = "none";
     }
   });
   responselist.prepend(fragment);
-  itemRep.removeEventListener("click", funcClick);
+  itemRep.removeEventListener("click", pickRepo);
 };
