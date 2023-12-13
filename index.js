@@ -21,6 +21,7 @@ const debouncedSearch = debounce(searchRepos, 400);
 input.addEventListener("input", debouncedSearch);
 
 function loadRep(data, element) {
+  //   console.log(dataRes);
   element.replaceChildren();
   if (dataRes.items.length === 0) {
     // console.log(1);
@@ -29,6 +30,7 @@ function loadRep(data, element) {
     repNameList.appendChild(nameItem);
   }
   if (data) {
+    console.log(data);
     data.forEach((item) => {
       itemRep = document.createElement("li");
       itemRep.textContent = `${item}`;
@@ -41,7 +43,7 @@ function loadRep(data, element) {
 async function searchRepos(e) {
   const valueInput = e.target.value;
   //   console.log(valueInput);
-  repNameList.classList.remove("hidden");
+  //   repNameList.classList.remove("hidden");
   return await fetch(
     `https://api.github.com/search/repositories?q=${valueInput}&per_page=5`
   )
@@ -63,8 +65,8 @@ let removeRepo = function (e) {
 
 let pickRepo = function (e) {
   //   console.log("PICK func");
-  let value = e.target.innerText;
   //   console.log(value);
+  let value = e.target.innerText;
   const fragment = document.createDocumentFragment();
   dataRes.items.forEach((item) => {
     if (item.name === value) {
@@ -87,7 +89,12 @@ let pickRepo = function (e) {
       btnClose.addEventListener("click", removeRepo);
       fragment.appendChild(responseItem);
       input.value = "";
-      repNameList.classList.add("hidden");
+      //   repNameList = [];
+      while (repNameList.firstChild) {
+        repNameList.removeChild(repNameList.lastChild);
+      }
+
+      //   repNameList.classList.add("hidden");
     }
   });
   responselist.prepend(fragment);
